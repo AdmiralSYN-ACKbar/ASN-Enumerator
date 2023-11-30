@@ -50,6 +50,29 @@ def get_asn_details(asn, output_box):
     last_message_status = False  # Set last message status to False to denote that it is not a status message
     return asn  # Return ASN
 
+# Function to get details by name
+def get_name_details(name, output_box):
+    global last_message_status  # Use the global variable
+
+    # Send GET request to BGPView API to get details by name
+    response = requests.get(f"https://api.bgpview.io/search?query_term={name}")
+    data = response.json()  # Parse JSON response
+
+    if response.status_code == 200:  # Check if request was successful
+        asns = data['data']['asns']  # Get ASNs
+
+        output_box.delete('1.0', tk.END)  # Clear output box
+
+        # Display ASNs
+        for asn in asns:
+            output_box.insert(tk.END, f"ASN: {asn['asn']}, Name: {asn['name']}, Description: {asn['description']}, Country Code: {asn['country_code']}\n")
+
+    else:  # If request was not successful
+        output_box.delete('1.0', tk.END)  # Clear output box
+        output_box.insert(tk.END, "Could not retrieve data.")  # Display error message
+
+    last_message_status = False  # Set last message status to False to denote that it is not a status message
+
 # Function to write output to file
 def write_to_file(output_box, output_file_entry):
     global last_message_status  # Use the global variable
@@ -148,21 +171,29 @@ def main():
     asn_button = ttk.Button(frame, text="Enumerate", command=lambda: get_asn_details(asn_entry.get(), output_box))
     asn_button.grid(row=3, column=2, sticky=tk.W)
 
+    # Create Name Search label, entry field, and button, and place them in grid
+    name_search_label = ttk.Label(frame, text="Name Search:", font=("Sylfaen", 10, "bold"))
+    name_search_label.grid(row=4, column=0, sticky=tk.W)
+    name_search_entry = ttk.Entry(frame, width=30)
+    name_search_entry.grid(row=4, column=1, sticky=(tk.W, tk.E))
+    name_search_button = ttk.Button(frame, text="Search", command=lambda: get_name_details(name_search_entry.get(), output_box))
+    name_search_button.grid(row=4, column=2, sticky=tk.W)
+
     # Create output label and text box, and place them in grid
     output_label = ttk.Label(frame, text="Output:", font=("Sylfaen", 14, "bold"))
-    output_label.grid(row=4, column=0, sticky=tk.W)
+    output_label.grid(row=5, column=0, sticky=tk.W)
     output_box = tk.Text(frame, width=50, height=20)
-    output_box.grid(row=5, column=0, columnspan=4, sticky=(tk.W, tk.E))
+    output_box.grid(row=6, column=0, columnspan=4, sticky=(tk.W, tk.E))
 
     # Create output file label, entry field, and buttons, and place them in grid
     output_file_label = ttk.Label(frame, text="Write Output:", font=("Sylfaen", 10, "bold"))
-    output_file_label.grid(row=6, column=0, sticky=tk.W)
+    output_file_label.grid(row=7, column=0, sticky=tk.W)
     output_file_entry = ttk.Entry(frame, width=30)
-    output_file_entry.grid(row=6, column=1, sticky=(tk.W, tk.E))
+    output_file_entry.grid(row=7, column=1, sticky=(tk.W, tk.E))
     output_file_button = ttk.Button(frame, text="Browse", command=lambda: browse_file(output_file_entry))
-    output_file_button.grid(row=6, column=2, sticky=tk.W)
+    output_file_button.grid(row=7, column=2, sticky=tk.W)
     output_file_write_button = ttk.Button(frame, text="Write", command=lambda: write_to_file(output_box, output_file_entry))
-    output_file_write_button.grid(row=6, column=3, sticky=tk.W)
+    output_file_write_button.grid(row=7, column=3, sticky=tk.W)
 
     # Configure grid padding for all child widgets of frame
     for child in frame.winfo_children(): 

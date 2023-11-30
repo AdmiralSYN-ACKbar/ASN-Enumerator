@@ -7,7 +7,7 @@ This Python script provides a simple GUI for looking up Autonomous System Number
 - Enumerate IP prefixes for a given ASN
 - Write output to a CSV file
 
-## Why is this useful?
+## Why is this a useful tool?
 
 Knowing the ASN associated with a particular IP address can provide valuable information about the network where the IP address resides. This can be useful for network routing, security investigations and troubleshooting.
 
