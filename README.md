@@ -5,6 +5,7 @@ This Python script provides a simple GUI for looking up Autonomous System Number
 
 - Lookup ASN details for a given IP address
 - Enumerate IP prefixes for a given ASN
+- Search for ASNs by organization name
 - Write output to a CSV file
 
 ## Why is this a useful tool?
